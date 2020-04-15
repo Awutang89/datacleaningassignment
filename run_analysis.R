@@ -31,10 +31,10 @@ run_analysis <- function(filepath) {
   tempcode <- merge(y_total,activities, "code")
   #alternative way to do this as well using dyplyr commands-> mutate(y_total, activity = activities[code,2])
   activitymeanstd <- dplyr::bind_cols(x_meanstd,"activity" = tempcode[,2])  #binds activity to the mean and std data set
-  activitymeanstd <- cbind(activitymeanstd, "subject" = subject_total[,1])
+  namecleaningdata <- cbind(activitymeanstd, "subject" = subject_total[,1]) #binds subject to the mean and std dataset
   
   #clean the variable names of the activity mean std data frame to make it easier to understand - # I left easy to remember abbreviations inside
-  finalnames <- gsub("^t","time", names(activitymeanstd))  #change the naming from t to time
+  finalnames <- gsub("^t","time", names(namecleaningdata))  #change the naming from t to time
   finalnames <- gsub("^f","freq", finalnames) #change the naming for f to freq (frequency)
   finalnames <- gsub("\\.","_", finalnames)  #remove the . because of bad naming convention
   finalnames <- gsub("___","_", finalnames) #remove the ___ naming convention
@@ -42,7 +42,7 @@ run_analysis <- function(filepath) {
   finalnames <- gsub("bodybody","body",finalnames)     #remove the duplicate bodys
   
   #make the organized dataframe
-  tidydata <- activitymeanstd
+  tidydata <- namecleaningdata
   names(tidydata) <- finalnames
   
   print(str(tidydata))
@@ -50,5 +50,6 @@ run_analysis <- function(filepath) {
   #get data required as an average by activity and by subject
   finaldata <- group_by(tidydata, subject, activity) %>% summarise_all(funs(mean))
   print(str(finaldata))
+  write.csv(finaldata,"finaldata.csv", row.names = FALSE)
   }
 
