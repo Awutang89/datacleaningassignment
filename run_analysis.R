@@ -50,6 +50,6 @@ run_analysis <- function(filepath) {
   #get data required as an average by activity and by subject
   finaldata <- group_by(tidydata, subject, activity) %>% summarise_all(funs(mean))
   print(str(finaldata))
-  write.csv(finaldata,"finaldata.csv", row.names = FALSE)
+  write.table(finaldata,"finaldata.txt", row.names = FALSE)
   }
 
